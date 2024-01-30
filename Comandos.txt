@@ -1,0 +1,20 @@
+openssl req -passout pass:12345 -subj "/C=US/ST=IL/L=Chicago/O=IBM Corporation/OU=IBM Software Group/CN=Rational Performance Tester CA/emailAddress=rpt@abc.ibm.com" -new > waipio.ca.cert.csr
+
+openssl rsa -passin pass:12345 -in privkey.pem -out waipio.ca.key
+
+openssl x509 -in waipio.ca.cert.csr -out waipio.ca.cert -req -signkey waipio.ca.key -days 365
+
+openssl pkcs12 -passout pass:12345 -export -nokeys -cacerts -in waipio.ca.cert -out waipio.ca.cert.p12 -inkey waipio.ca.key
+
+Creacion de certificado para un usuario
+
+
+openssl req -passout pass:123 -subj "/C=US/ST=IL/L=Hidalgo/O=IBM Corporation/OU=IBM Software Group/CN=Juan Carlos/emailAddress=carlostroll@gmail.com" -new > Carlos.cert.csr
+
+openssl rsa -passin pass:123 -in privkey.pem -out carlos.key
+
+openssl x509 -req -in Carlos.cert.csr -out Carlos.cert -signkey carlos.key -CA waipio.ca.cert -CAkey waipio.ca.key -CAcreateserial -days 365
+
+openssl x509 -in carlos.cert -out Carlos.cert.der -outform DER
+
+openssl pkcs12 -passout pass:123 -export -in Carlos.cert -out Carlos.cert.p12 -inkey carlos.key
